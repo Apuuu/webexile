@@ -33,9 +33,6 @@ $(document).ready(() => {
 
         PlayerObj.player.pos.x += PlayerObj.moveX;
         PlayerObj.player.pos.y += PlayerObj.moveY;
-        Player.updateVerts();
-
-        console.log(Player.getVerts());
 
     }, 1000 / main.tickRate);
 
