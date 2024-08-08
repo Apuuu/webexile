@@ -12,6 +12,14 @@ export default class WebGPUManager {
 
         this.frameRateCap = 60;
         this.scene = [];
+
+        this.cameraPos = {
+            x: 0,
+            y: 0
+        };
+
+        this.lastFrameTime = 0;
+        this.frameDuration = 1000 / this.frameRateCap; // Convert framerate cap to milliseconds
     }
 
     addToScene(object) {
@@ -28,11 +36,11 @@ export default class WebGPUManager {
             console.log("Found usable device:", adapter);
             this.configureContext();
 
-            const shdaerParams = {
+            const shaderParams = {
                 code: shaders,
             };
 
-            const shaderModule = this.createShaderModule(shdaerParams);
+            const shaderModule = this.createShaderModule(shaderParams);
 
             const bufferParams = {
                 size: this.scene[0].getVerts().byteLength,
@@ -42,10 +50,7 @@ export default class WebGPUManager {
             console.log(this.scene[0]);
 
             const vertexBuffer = this.createVertexBuffer(bufferParams);
-
             this.queue.writeBuffer(vertexBuffer, 0, this.scene[0].getVerts(), 0, this.scene[0].getVerts().length);
-
-
 
             const vertexBuffers = [
                 {
@@ -92,7 +97,20 @@ export default class WebGPUManager {
                 layout: "auto",
             };
 
-            const renderPipeline = this.device.createRenderPipeline(pipelineDesc);
+            this.renderPipeline = this.device.createRenderPipeline(pipelineDesc);
+            this.vertexBuffer = vertexBuffer;
+
+            this.render();
+        });
+    }
+
+    render() {
+        const currentTime = performance.now();
+        const timeDiff = currentTime - this.lastFrameTime;
+
+        if (timeDiff >= this.frameDuration) {
+            this.lastFrameTime = currentTime;
+
             const commandEncoder = this.device.createCommandEncoder();
 
             const renderPassDescriptor = {
@@ -108,17 +126,16 @@ export default class WebGPUManager {
 
             const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
 
-            passEncoder.setPipeline(renderPipeline);
-            passEncoder.setVertexBuffer(0, vertexBuffer);
+            passEncoder.setPipeline(this.renderPipeline);
+            passEncoder.setVertexBuffer(0, this.vertexBuffer);
             passEncoder.draw(6);
 
             passEncoder.end();
 
             this.queue.submit([commandEncoder.finish()]);
+        }
 
-        }).catch(error => {
-            console.error(error);
-        });
+        requestAnimationFrame(this.render.bind(this));
     }
 
     configureContext() {
@@ -143,8 +160,6 @@ export default class WebGPUManager {
         return this.device.createBuffer(params);
     }
 
-
-
     async getAdapter() {
         if (!navigator.gpu) {
             throw Error("WebGPU not supported.");
@@ -158,5 +173,4 @@ export default class WebGPUManager {
         const device = await adapter.requestDevice();
         return device;
     }
-
 }
