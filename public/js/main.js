@@ -22,11 +22,20 @@ $(document).ready(() => {
 
     const PlayerObj = new PlayerController(Player);
 
+    for (let i = 0; i < 10; i++) {
+        const rect = main.ObjectsHandler.createObject("rectangle", 20, 20);
+        rect.pos.x = Math.random() * 1920;
+        rect.pos.y = Math.random() * 1080;
+        main.webGPUManager.addToScene(rect);
+    }
+
     setInterval(() => {
 
         PlayerObj.player.pos.x += PlayerObj.moveX;
         PlayerObj.player.pos.y += PlayerObj.moveY;
         Player.updateVerts();
+
+        console.log(Player.getVerts());
 
     }, 1000 / main.tickRate);
 

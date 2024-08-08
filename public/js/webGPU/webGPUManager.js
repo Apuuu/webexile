@@ -36,106 +36,97 @@ export default class WebGPUManager {
             console.log("Found usable device:", adapter);
             this.configureContext();
 
-            const shaderParams = {
-                code: shaders,
-            };
+            setInterval(() => {
 
-            const shaderModule = this.createShaderModule(shaderParams);
 
-            const bufferParams = {
-                size: this.scene[0].getVerts().byteLength,
-                usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
-            };
+                const shaderParams = {
+                    code: shaders,
+                };
 
-            console.log(this.scene[0]);
+                const shaderModule = this.createShaderModule(shaderParams);
 
-            const vertexBuffer = this.createVertexBuffer(bufferParams);
-            this.queue.writeBuffer(vertexBuffer, 0, this.scene[0].getVerts(), 0, this.scene[0].getVerts().length);
+                const bufferParams = {
+                    size: this.scene[0].getVerts().byteLength,
+                    usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
+                };
 
-            const vertexBuffers = [
-                {
-                    attributes: [
-                        {
-                            shaderLocation: 0, // position
-                            offset: 0,
-                            format: "float32x2",
-                        },
-                        {
-                            shaderLocation: 1, // color
-                            offset: 8,
-                            format: "float32x4",
-                        },
-                        {
-                            shaderLocation: 2, // uv coords
-                            offset: 24,
-                            format: "float32x2",
-                        },
-                    ],
-                    arrayStride: 32,
-                    stepMode: "vertex",
-                },
-            ];
+                const vertexBuffer = this.createVertexBuffer(bufferParams);
+                this.queue.writeBuffer(vertexBuffer, 0, this.scene[0].getVerts(), 0, this.scene[0].getVerts().length);
 
-            const pipelineDesc = {
-                vertex: {
-                    module: shaderModule,
-                    entryPoint: "vertex_main",
-                    buffers: vertexBuffers,
-                },
-                fragment: {
-                    module: shaderModule,
-                    entryPoint: "fragment_main",
-                    targets: [
-                        {
-                            format: navigator.gpu.getPreferredCanvasFormat(),
-                        },
-                    ],
-                },
-                primitive: {
-                    topology: "triangle-list",
-                },
-                layout: "auto",
-            };
-
-            this.renderPipeline = this.device.createRenderPipeline(pipelineDesc);
-            this.vertexBuffer = vertexBuffer;
-
-            this.render();
-        });
-    }
-
-    render() {
-        const currentTime = performance.now();
-        const timeDiff = currentTime - this.lastFrameTime;
-
-        if (timeDiff >= this.frameDuration) {
-            this.lastFrameTime = currentTime;
-
-            const commandEncoder = this.device.createCommandEncoder();
-
-            const renderPassDescriptor = {
-                colorAttachments: [
+                const vertexBuffers = [
                     {
-                        clearValue: { r: 0.3, g: 0.3, b: 0.5, a: 1.0 },
-                        loadOp: "clear",
-                        storeOp: "store",
-                        view: this.context.getCurrentTexture().createView(),
+                        attributes: [
+                            {
+                                shaderLocation: 0, // position
+                                offset: 0,
+                                format: "float32x2",
+                            },
+                            {
+                                shaderLocation: 1, // color
+                                offset: 8,
+                                format: "float32x4",
+                            },
+                            {
+                                shaderLocation: 2, // uv coords
+                                offset: 24,
+                                format: "float32x2",
+                            },
+                        ],
+                        arrayStride: 32,
+                        stepMode: "vertex",
                     },
-                ],
-            };
+                ];
 
-            const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
+                const pipelineDesc = {
+                    vertex: {
+                        module: shaderModule,
+                        entryPoint: "vertex_main",
+                        buffers: vertexBuffers,
+                    },
+                    fragment: {
+                        module: shaderModule,
+                        entryPoint: "fragment_main",
+                        targets: [
+                            {
+                                format: navigator.gpu.getPreferredCanvasFormat(),
+                            },
+                        ],
+                    },
+                    primitive: {
+                        topology: "triangle-list",
+                    },
+                    layout: "auto",
+                };
 
-            passEncoder.setPipeline(this.renderPipeline);
-            passEncoder.setVertexBuffer(0, this.vertexBuffer);
-            passEncoder.draw(6);
+                this.renderPipeline = this.device.createRenderPipeline(pipelineDesc);
+                this.vertexBuffer = vertexBuffer;
 
-            passEncoder.end();
+                const commandEncoder = this.device.createCommandEncoder();
 
-            this.queue.submit([commandEncoder.finish()]);
-        }
+                const renderPassDescriptor = {
+                    colorAttachments: [
+                        {
+                            clearValue: { r: 0.3, g: 0.3, b: 0.3, a: 1.0 },
+                            loadOp: "clear",
+                            storeOp: "store",
+                            view: this.context.getCurrentTexture().createView(),
+                        },
+                    ],
+                };
 
-        requestAnimationFrame(this.render.bind(this));
+                const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
+
+                passEncoder.setPipeline(this.renderPipeline);
+                passEncoder.setVertexBuffer(0, this.vertexBuffer);
+                passEncoder.draw(6);
+
+                passEncoder.end();
+
+                this.queue.submit([commandEncoder.finish()]);
+
+            }, 1000 / this.frameRateCap);
+
+        });
     }
 
     configureContext() {

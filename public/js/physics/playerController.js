@@ -13,7 +13,7 @@ export default class PlayerController {
         this.moveXMax = 1;
         this.moveYMax = 1;
 
-        this.playerSpeed = 0.001;
+        this.playerSpeed = 5;
 
         this.createMousePosListener();
 
@@ -27,7 +27,7 @@ export default class PlayerController {
             let mouseY = event.clientY;
 
             this.moveX = this.Utils.clamp((mouseX - this.width / 2) / (this.width / 2), -this.moveXMax, this.moveXMax) * this.playerSpeed;
-            this.moveY = this.Utils.clamp((mouseY - this.height / 2) / (this.height / 2), -this.moveYMax, this.moveYMax) * this.playerSpeed;
+            this.moveY = this.Utils.clamp((mouseY - this.height / 2) / (this.height / 2), -this.moveYMax, this.moveYMax) * -this.playerSpeed;
         });
     }
 
