@@ -13,7 +13,7 @@ export default class Game {
 
         this.WebGPUManager.init();
 
-        this.tickRate = 128;
+        this.tickRate = 64;
 
         this.run();
     }
