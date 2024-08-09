@@ -19,7 +19,7 @@ $(document).ready(() => {
 
 
 
-    for (let i = 0; i < 500; i++) {
+    for (let i = 0; i < 5000; i++) {
         const rect = main.ObjectsHandler.createObject("rectangle", 20, 20);
         rect.pos.x = Math.random() * 1920;
         rect.pos.y = Math.random() * 1080;

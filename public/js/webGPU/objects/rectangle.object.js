@@ -1,5 +1,3 @@
-import { config } from "../config.js";
-
 export default class Rectangle {
 
     constructor(scaleX, scaleY) {
@@ -44,28 +42,46 @@ export default class Rectangle {
     updateVerts() {
         const width = this.screenWidth;
         const height = this.screenHeight;
+        const halfWidth = width / 2;
+        const halfHeight = height / 2;
 
-        function toNDC(x, y, width, height) {
-            return [
-                (x / (width / 2)) - 1,
-                (y / (height / 2)) - 1
-            ];
-        }
+        const posX = this.pos.x + this.offset.x;
+        const posY = this.pos.y + this.offset.y;
+        const scaleX = this.scale.x;
+        const scaleY = this.scale.y;
 
         const verts = [
-            [-this.scale.x + this.pos.x + this.offset.x, -this.scale.y + this.pos.y + this.offset.y],
-            [this.scale.x + this.pos.x + this.offset.x, -this.scale.y + this.pos.y + this.offset.y],
-            [this.scale.x + this.pos.x + this.offset.x, this.scale.y + this.pos.y + this.offset.y],
+            [-scaleX + posX, -scaleY + posY],
+            [scaleX + posX, -scaleY + posY],
+            [scaleX + posX, scaleY + posY],
 
-            [-this.scale.x + this.pos.x + this.offset.x, -this.scale.y + this.pos.y + this.offset.y],
-            [this.scale.x + this.pos.x + this.offset.x, this.scale.y + this.pos.y + this.offset.y],
-            [-this.scale.x + this.pos.x + this.offset.x, this.scale.y + this.pos.y + this.offset.y]
+            [-scaleX + posX, -scaleY + posY],
+            [scaleX + posX, scaleY + posY],
+            [-scaleX + posX, scaleY + posY]
         ];
 
-        const transformedVerts = verts.flatMap(([x, y], index) => {
-            const [ndcX, ndcY] = toNDC(x, y, width, height);
-            const uv = index % 3 === 0 ? [0, 0] : index % 3 === 1 ? [1, 0] : [1, 1];
-            return [ndcX, ndcY, this.color.r, this.color.g, this.color.b, this.color.a, ...uv];
+        const transformedVerts = new Float32Array(verts.length * 8); // 8 components per vertex (x, y, r, g, b, a, u, v)
+        const color = [this.color.r, this.color.g, this.color.b, this.color.a];
+
+        const uvCoords = [
+            [0, 0], [1, 0], [1, 1],
+            [0, 0], [1, 1], [0, 1]
+        ];
+
+        verts.forEach(([x, y], index) => {
+            const ndcX = (x / halfWidth) - 1;
+            const ndcY = (y / halfHeight) - 1;
+            const uv = uvCoords[index];
+            const offset = index * 8;
+
+            transformedVerts[offset] = ndcX;
+            transformedVerts[offset + 1] = ndcY;
+            transformedVerts[offset + 2] = color[0];
+            transformedVerts[offset + 3] = color[1];
+            transformedVerts[offset + 4] = color[2];
+            transformedVerts[offset + 5] = color[3];
+            transformedVerts[offset + 6] = uv[0];
+            transformedVerts[offset + 7] = uv[1];
         });
 
         this.verts.set(transformedVerts);
