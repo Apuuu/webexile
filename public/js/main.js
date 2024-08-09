@@ -15,14 +15,16 @@ class Main {
 
 $(document).ready(() => {
 
+    document.addEventListener('contextmenu', event => {
+        event.preventDefault();
+    });
+
     const main = new Main();
 
-
-
-    for (let i = 0; i < 5000; i++) {
-        const rect = main.ObjectsHandler.createObject("rectangle", 10, 10);
-        rect.pos.x = Math.random() * 1920;
-        rect.pos.y = Math.random() * 1080;
+    for (let i = 0; i < 1000; i++) {
+        const rect = main.ObjectsHandler.createObject("rectangle", 5, 5);
+        rect.pos.x = Math.random() * 2000;
+        rect.pos.y = Math.random() * 2000;
         main.webGPUManager.addToScene(rect);
     }
 
@@ -35,8 +37,10 @@ $(document).ready(() => {
 
     setInterval(() => {
 
-        PlayerObj.player.pos.x += PlayerObj.moveX;
-        PlayerObj.player.pos.y += PlayerObj.moveY;
+        if (PlayerObj.isLeftClickHeld) {
+            PlayerObj.player.pos.x += PlayerObj.moveX;
+            PlayerObj.player.pos.y += PlayerObj.moveY;
+        }
 
         main.webGPUManager.cameraPos.x = -Player.pos.x + config.screenWidth / 2;
         main.webGPUManager.cameraPos.y = -Player.pos.y + config.screenHeight / 2;

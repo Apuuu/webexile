@@ -104,8 +104,6 @@ export default class WebGPUManager {
 
         const visibleObjects = this.getObjectsInFrame(this.scene);
 
-        console.log("Currently visible Objects: " + visibleObjects.length);
-
         const commandEncoder = this.device.createCommandEncoder();
         const renderPassDescriptor = {
             colorAttachments: [

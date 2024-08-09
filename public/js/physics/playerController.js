@@ -17,8 +17,29 @@ export default class PlayerController {
 
         this.createMousePosListener();
 
+        this.isLeftClickHeld = false;
+
+        document.addEventListener('mousedown', (event) => this.onMouseDown(event));
+        document.addEventListener('mouseup', (event) => this.onMouseUp(event));
+
         this.moveX = 0;
         this.moveY = 0;
+    }
+
+    onMouseDown(event) {
+        if (event.button === 0) {
+            this.isLeftClickHeld = true;
+        }
+    }
+
+    onMouseUp(event) {
+        if (event.button === 0) {
+            this.isLeftClickHeld = false;
+        }
+    }
+
+    isHoldingLeftClick() {
+        return this.isLeftClickHeld;
     }
 
     createMousePosListener() {
