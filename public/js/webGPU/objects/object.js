@@ -6,6 +6,9 @@ export default class Object {
         this.screenWidth = config.screenWidth;
         this.screenHeight = config.screenHeight;
 
+        this.name = "";
+        this.type = "";
+
         this.scale = {
             x: 0,
             y: 0
@@ -55,5 +58,13 @@ export default class Object {
         this.color.b = b;
         this.color.a = a;
         this.updateVerts();
+    }
+
+    setName(name) {
+        this.name = name;
+    }
+
+    setType(type) {
+        this.type = type;
     }
 }
