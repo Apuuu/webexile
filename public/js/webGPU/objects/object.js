@@ -8,6 +8,7 @@ export default class Object {
 
         this.name = "";
         this.type = "";
+        this.collisionWith = null;
 
         this.scale = {
             x: 0,

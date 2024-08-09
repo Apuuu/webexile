@@ -13,7 +13,7 @@ export default class Game {
 
         this.WebGPUManager.init();
 
-        this.tickRate = 64;
+        this.tickRate = 128;
 
         this.run();
     }
@@ -27,6 +27,8 @@ export default class Game {
         const CollisionBox = this.ObjectsHandler.createObject("rectangle", 10, 10);
         this.CollisionHandler.addCollisionListenerTo(CollisionBox);
         CollisionBox.setColor(0, 255, 0, 255);
+        CollisionBox.setPos(300, 300);
+
 
         this.WebGPUManager.addToScene(CollisionBox);
         this.WebGPUManager.addToScene(Player);
@@ -37,6 +39,11 @@ export default class Game {
         setInterval(() => {
 
             this.CollisionHandler.listenToCollisions();
+
+            if (Player.collisionWith !== null) {
+                Player.collisionWith.setColor(255, 255, 255, 255);
+                Player.collisionWith.setScale(100, 100);
+            }
 
             if (PlayerObj.isLeftClickHeld) {
                 PlayerObj.player.pos.x += PlayerObj.moveX;

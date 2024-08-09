@@ -19,6 +19,9 @@ export default class collisionHandler {
 
                 if (this.isColliding(objA, objB)) {
                     this.handleCollision(objA, objB);
+                } else {
+                    objA.collisionWith = null;
+                    objB.collisionWith = null;
                 }
             }
         }
@@ -37,7 +40,8 @@ export default class collisionHandler {
     }
 
     handleCollision(objA, objB) {
-        console.log(`Collision detected between ${objA} and ${objB}`);
+        objA.collisionWith = objB;
+        objB.collisionWith = objA;
     }
 
 }
