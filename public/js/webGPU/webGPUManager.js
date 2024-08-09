@@ -13,6 +13,9 @@ export default class WebGPUManager {
         this.frameRateCap = 60;
         this.scene = [];
 
+        this.halfScreenWidth = config.screenWidth / 2;
+        this.halfScreenHeight = config.screenHeight / 2;
+
         this.cameraPos = {
             x: 1000,
             y: 0
@@ -99,6 +102,10 @@ export default class WebGPUManager {
     render() {
         requestAnimationFrame(() => this.render());
 
+        const visibleObjects = this.getObjectsInFrame(this.scene);
+
+        console.log("Currently visible Objects: " + visibleObjects.length);
+
         const commandEncoder = this.device.createCommandEncoder();
         const renderPassDescriptor = {
             colorAttachments: [
@@ -115,7 +122,7 @@ export default class WebGPUManager {
         passEncoder.setPipeline(this.renderPipeline);
 
         let totalVerts = 0;
-        this.scene.forEach(object => {
+        visibleObjects.forEach(object => {
             totalVerts += object.verts.length;
         });
 
@@ -127,7 +134,7 @@ export default class WebGPUManager {
         const vertexBuffer = this.createVertexBuffer(bufferParams);
         let offset = 0;
 
-        this.scene.forEach(object => {
+        visibleObjects.forEach(object => {
             object.offset = this.cameraPos;
             object.updateVerts();
 
@@ -138,13 +145,35 @@ export default class WebGPUManager {
         passEncoder.setVertexBuffer(0, vertexBuffer);
 
         let vertexOffset = 0;
-        this.scene.forEach(object => {
+        visibleObjects.forEach(object => {
             passEncoder.draw(object.verts.length / 8, 1, vertexOffset / 8, 0); // 8 components per vertex (x, y, r, g, b, a, u, v)
             vertexOffset += object.verts.length;
         });
 
         passEncoder.end();
         this.queue.submit([commandEncoder.finish()]);
+    }
+
+    getObjectsInFrame() {
+
+        const inFrameWidthMax = ((-this.cameraPos.x + this.halfScreenWidth) + this.halfScreenWidth);
+        const inFrameWidthMin = ((-this.cameraPos.x + this.halfScreenWidth) - this.halfScreenWidth);
+
+        const inFrameHeightMax = ((-this.cameraPos.y + this.halfScreenHeight) + this.halfScreenHeight);
+        const inFrameHeightMin = ((-this.cameraPos.y + this.halfScreenHeight) - this.halfScreenHeight);
+
+        let visibleObjects = [];
+
+        this.scene.forEach((object) => {
+            const objPosX = object.pos.x;
+            const objPosY = object.pos.y;
+
+            if (objPosX > inFrameWidthMin && objPosX < inFrameWidthMax && objPosY > inFrameHeightMin && objPosY < inFrameHeightMax) {
+                visibleObjects.push(object);
+            }
+        });
+
+        return visibleObjects;
     }
 
     configureContext() {

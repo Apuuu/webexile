@@ -20,7 +20,7 @@ $(document).ready(() => {
 
 
     for (let i = 0; i < 5000; i++) {
-        const rect = main.ObjectsHandler.createObject("rectangle", 20, 20);
+        const rect = main.ObjectsHandler.createObject("rectangle", 10, 10);
         rect.pos.x = Math.random() * 1920;
         rect.pos.y = Math.random() * 1080;
         main.webGPUManager.addToScene(rect);
