@@ -14,7 +14,7 @@ export default class WebGPUManager {
         this.scene = [];
 
         this.cameraPos = {
-            x: 0,
+            x: 1000,
             y: 0
         };
 
@@ -115,6 +115,8 @@ export default class WebGPUManager {
         passEncoder.setPipeline(this.renderPipeline);
 
         this.scene.forEach(object => {
+
+            object.offset = this.cameraPos;
 
             object.updateVerts();
 

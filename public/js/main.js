@@ -1,6 +1,7 @@
 import WebGPUManager from './webGPU/webGPUManager.js';
 import ObjectsHandler from './webGPU/objects/objectsHandler.js';
 import PlayerController from './physics/playerController.js';
+import { config } from "../js/webGPU/config.js";
 
 class Main {
     constructor() {
@@ -33,6 +34,9 @@ $(document).ready(() => {
 
         PlayerObj.player.pos.x += PlayerObj.moveX;
         PlayerObj.player.pos.y += PlayerObj.moveY;
+
+        main.webGPUManager.cameraPos.x = -Player.pos.x + config.screenWidth / 2;
+        main.webGPUManager.cameraPos.y = -Player.pos.y + config.screenHeight / 2;
 
     }, 1000 / main.tickRate);
 

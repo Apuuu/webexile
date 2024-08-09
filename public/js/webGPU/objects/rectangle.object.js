@@ -12,9 +12,14 @@ export default class Rectangle {
             y: scaleY
         }
 
+        this.offset = {
+            x: 0,
+            y: 0,
+        }
+
         this.pos = {
             x: 0,
-            y: 0
+            y: 0,
         }
 
         this.color = {
@@ -23,6 +28,8 @@ export default class Rectangle {
             b: 1,
             a: 1,
         }
+
+
 
         this.verts = new Float32Array(48);
         this.updateVerts();
@@ -46,14 +53,13 @@ export default class Rectangle {
         }
 
         const verts = [
-            // First triangle
-            [-this.scale.x + this.pos.x, -this.scale.y + this.pos.y],
-            [this.scale.x + this.pos.x, -this.scale.y + this.pos.y],
-            [this.scale.x + this.pos.x, this.scale.y + this.pos.y],
-            // Second triangle
-            [-this.scale.x + this.pos.x, -this.scale.y + this.pos.y],
-            [this.scale.x + this.pos.x, this.scale.y + this.pos.y],
-            [-this.scale.x + this.pos.x, this.scale.y + this.pos.y]
+            [-this.scale.x + this.pos.x + this.offset.x, -this.scale.y + this.pos.y + this.offset.y],
+            [this.scale.x + this.pos.x + this.offset.x, -this.scale.y + this.pos.y + this.offset.y],
+            [this.scale.x + this.pos.x + this.offset.x, this.scale.y + this.pos.y + this.offset.y],
+
+            [-this.scale.x + this.pos.x + this.offset.x, -this.scale.y + this.pos.y + this.offset.y],
+            [this.scale.x + this.pos.x + this.offset.x, this.scale.y + this.pos.y + this.offset.y],
+            [-this.scale.x + this.pos.x + this.offset.x, this.scale.y + this.pos.y + this.offset.y]
         ];
 
         const transformedVerts = verts.flatMap(([x, y], index) => {
