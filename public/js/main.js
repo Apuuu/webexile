@@ -17,18 +17,21 @@ $(document).ready(() => {
 
     const main = new Main();
 
-    const Player = main.ObjectsHandler.createObject("rectangle", 20, 50);
 
-    main.webGPUManager.addToScene(Player);
 
-    const PlayerObj = new PlayerController(Player);
-
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 500; i++) {
         const rect = main.ObjectsHandler.createObject("rectangle", 20, 20);
         rect.pos.x = Math.random() * 1920;
         rect.pos.y = Math.random() * 1080;
         main.webGPUManager.addToScene(rect);
     }
+
+    const Player = main.ObjectsHandler.createObject("rectangle", 20, 50);
+    Player.setColor(0, 255, 0, 255);
+
+    main.webGPUManager.addToScene(Player);
+
+    const PlayerObj = new PlayerController(Player);
 
     setInterval(() => {
 

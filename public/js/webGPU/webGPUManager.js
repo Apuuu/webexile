@@ -114,22 +114,33 @@ export default class WebGPUManager {
         const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
         passEncoder.setPipeline(this.renderPipeline);
 
+        let totalVerts = 0;
         this.scene.forEach(object => {
+            totalVerts += object.verts.length;
+        });
 
+        const bufferParams = {
+            size: totalVerts * Float32Array.BYTES_PER_ELEMENT,
+            usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
+        };
+
+        const vertexBuffer = this.createVertexBuffer(bufferParams);
+        let offset = 0;
+
+        this.scene.forEach(object => {
             object.offset = this.cameraPos;
-
             object.updateVerts();
 
-            const bufferParams = {
-                size: object.verts.byteLength,
-                usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
-            };
+            this.queue.writeBuffer(vertexBuffer, offset, object.verts, 0, object.verts.length);
+            offset += object.verts.length * Float32Array.BYTES_PER_ELEMENT;
+        });
 
-            const vertexBuffer = this.createVertexBuffer(bufferParams);
-            this.queue.writeBuffer(vertexBuffer, 0, object.verts, 0, object.verts.length);
+        passEncoder.setVertexBuffer(0, vertexBuffer);
 
-            passEncoder.setVertexBuffer(0, vertexBuffer);
-            passEncoder.draw(object.verts.length / 8); // 8 components per vertex (x, y, r, g, b, a, u, v)
+        let vertexOffset = 0;
+        this.scene.forEach(object => {
+            passEncoder.draw(object.verts.length / 8, 1, vertexOffset / 8, 0); // 8 components per vertex (x, y, r, g, b, a, u, v)
+            vertexOffset += object.verts.length;
         });
 
         passEncoder.end();
