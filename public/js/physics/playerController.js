@@ -13,7 +13,7 @@ export default class PlayerController {
         this.moveXMax = 1;
         this.moveYMax = 1;
 
-        this.playerSpeed = 5;
+        this.playerSpeed = 10;
 
         this.createMousePosListener();
 
