@@ -1,42 +1,13 @@
-export default class Rectangle {
+import Object from "./object.js";
+
+export default class Rectangle extends Object {
 
     constructor(scaleX, scaleY) {
-
-        this.screenWidth = config.screenWidth;
-        this.screenHeight = config.screenHeight;
-
-        this.scale = {
-            x: scaleX,
-            y: scaleY
-        }
-
-        this.offset = {
-            x: 0,
-            y: 0,
-        }
-
-        this.pos = {
-            x: 0,
-            y: 0,
-        }
-
-        this.color = {
-            r: 1,
-            g: 0,
-            b: 1,
-            a: 1,
-        }
-
-
-
+        super();
+        this.scale.x = scaleX;
+        this.scale.y = scaleY;
         this.verts = new Float32Array(48);
         this.updateVerts();
-
-
-        //webGPU stuff
-        this.usedShadermodule = null;
-        this.usedTexture = null;
-
     }
 
     updateVerts() {
@@ -68,11 +39,13 @@ export default class Rectangle {
             [0, 0], [1, 1], [0, 1]
         ];
 
-        verts.forEach(([x, y], index) => {
+        for (let i = 0; i < verts.length; i++) {
+            const x = verts[i][0];
+            const y = verts[i][1];
             const ndcX = (x / halfWidth) - 1;
             const ndcY = (y / halfHeight) - 1;
-            const uv = uvCoords[index];
-            const offset = index * 8;
+            const uv = uvCoords[i];
+            const offset = i * 8;
 
             transformedVerts[offset] = ndcX;
             transformedVerts[offset + 1] = ndcY;
@@ -82,33 +55,9 @@ export default class Rectangle {
             transformedVerts[offset + 5] = color[3];
             transformedVerts[offset + 6] = uv[0];
             transformedVerts[offset + 7] = uv[1];
-        });
+        }
 
         this.verts.set(transformedVerts);
-    }
-
-    getVerts() {
-        return this.verts;
-    }
-
-    setPos(x, y) {
-        this.pos.x = x;
-        this.pos.y = y;
-        this.updateVerts();
-    }
-
-    setScale(x, y) {
-        this.scale.x = x;
-        this.scale.y = y;
-        this.updateVerts();
-    }
-
-    setColor(r, g, b, a) {
-        this.color.r = r;
-        this.color.g = g;
-        this.color.b = b;
-        this.color.a = a;
-        this.updateVerts();
     }
 
 }
