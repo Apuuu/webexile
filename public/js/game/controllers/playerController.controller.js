@@ -1,5 +1,5 @@
-import { config } from "../webGPU/config.js";
-import Utils from "../utils.js";
+import { config } from "../../webGPU/config.js";
+import Utils from "../../utils.js";
 
 export default class PlayerController {
     constructor(playerObject) {
@@ -19,9 +19,13 @@ export default class PlayerController {
         this.createMousePosListener();
 
         this.isLeftClickHeld = false;
+        this.isWPressed = false;
 
         document.addEventListener('mousedown', (event) => this.onMouseDown(event));
         document.addEventListener('mouseup', (event) => this.onMouseUp(event));
+        document.addEventListener('keydown', (event) => this.onKeyDown(event));
+        document.addEventListener('keyup', (event) => this.onKeyUp(event));
+
 
         this.moveX = 0;
         this.moveY = 0;
@@ -41,6 +45,18 @@ export default class PlayerController {
 
     isHoldingLeftClick() {
         return this.isLeftClickHeld;
+    }
+
+    onKeyDown(event) {
+        if (event.key === 'w' || event.key === 'W') {
+            this.isWPressed = true;
+        }
+    }
+
+    onKeyUp(event) {
+        if (event.key === 'w' || event.key === 'W') {
+            this.isWPressed = false;
+        }
     }
 
     createMousePosListener() {

@@ -153,23 +153,28 @@ export default class WebGPUManager {
     }
 
     getObjectsInFrame() {
+        const halfScreenWidth = this.halfScreenWidth;
+        const halfScreenHeight = this.halfScreenHeight;
+        const cameraPosX = this.cameraPos.x;
+        const cameraPosY = this.cameraPos.y;
 
-        const inFrameWidthMax = ((-this.cameraPos.x + this.halfScreenWidth) + this.halfScreenWidth);
-        const inFrameWidthMin = ((-this.cameraPos.x + this.halfScreenWidth) - this.halfScreenWidth);
+        const inFrameWidthMax = (-cameraPosX + halfScreenWidth) + halfScreenWidth;
+        const inFrameWidthMin = (-cameraPosX + halfScreenWidth) - halfScreenWidth;
 
-        const inFrameHeightMax = ((-this.cameraPos.y + this.halfScreenHeight) + this.halfScreenHeight);
-        const inFrameHeightMin = ((-this.cameraPos.y + this.halfScreenHeight) - this.halfScreenHeight);
+        const inFrameHeightMax = (-cameraPosY + halfScreenHeight) + halfScreenHeight;
+        const inFrameHeightMin = (-cameraPosY + halfScreenHeight) - halfScreenHeight;
 
         let visibleObjects = [];
 
-        this.scene.forEach((object) => {
+        for (let i = 0; i < this.scene.length; i++) {
+            const object = this.scene[i];
             const objPosX = object.pos.x;
             const objPosY = object.pos.y;
 
             if (objPosX > inFrameWidthMin && objPosX < inFrameWidthMax && objPosY > inFrameHeightMin && objPosY < inFrameHeightMax) {
                 visibleObjects.push(object);
             }
-        });
+        }
 
         return visibleObjects;
     }
