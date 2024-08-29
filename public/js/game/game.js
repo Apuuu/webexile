@@ -46,7 +46,7 @@ export default class Game {
             if (PlayerObj.isWPressed && this.wPressed == false) {
 
                 let ProjectileObj = new Projectile(this.ObjectsHandler, this.WebGPUManager);
-                ProjectileObj.shootProjectileAtTo(Player.pos.x, Player.pos.y, PlayerObj.moveX, PlayerObj.moveY);
+                ProjectileObj.shoot(Player.pos.x, Player.pos.y, PlayerObj.moveX, PlayerObj.moveY);
                 this.entities.push(ProjectileObj);
                 this.wPressed = true;
 
@@ -58,7 +58,7 @@ export default class Game {
 
             this.entities.forEach((entity, index) => {
 
-                entity.updateProjectile();
+                entity.update();
 
                 if (entity.hasOwnProperty("lifeTime")) {
                     if (entity.lifeTime > entity.maxLifeTime) {

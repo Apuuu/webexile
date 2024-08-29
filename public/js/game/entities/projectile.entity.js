@@ -16,13 +16,17 @@ export default class Projectile {
 
         this.speed = 10;
 
-        this.renderable = this.ObjectHandler.createObject("rectangle", 10, 10);
+        this.renderable = this.ObjectHandler.createObject("rectangle", this.scale.x, this.scale.y);
         this.WebGPUManager.addToScene(this.renderable);
         this.renderable.setColor(255, 255, 0, 0);
 
     }
 
-    shootProjectileAtTo(x, y, xdir, ydir) {
+    getRenderable() {
+        return this.renderable;
+    }
+
+    shoot(x, y, xdir, ydir) {
 
         this.pos.x = x;
         this.pos.y = y;
@@ -32,7 +36,7 @@ export default class Projectile {
 
     }
 
-    updateProjectile() {
+    update() {
 
         this.pos.x += this.xdir * this.speed;
         this.pos.y += this.ydir * this.speed;
