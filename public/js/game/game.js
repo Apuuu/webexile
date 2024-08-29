@@ -16,6 +16,8 @@ export default class Game {
 
         this.tickRate = 64;
 
+        this.entities = [];
+
         this.wPressed = false;
 
         this.run();
@@ -46,18 +48,29 @@ export default class Game {
             this.CollisionHandler.listenToCollisions();
 
             if (PlayerObj.isWPressed && this.wPressed == false) {
-                console.log("W pressed");
 
-                let PorjectileObj = new Projectile();
-                PorjectileObj.shootProjectileAtTo(Player.pos.x, Player.pos.y, PlayerObj.moveX, PlayerObj.moveY);
+                let ProjectileObj = new Projectile();
+                ProjectileObj.shootProjectileAtTo(Player.pos.x, Player.pos.y, PlayerObj.moveX, PlayerObj.moveY);
 
-                ProjectileRenderable.setPos(PorjectileObj.pos.x, PorjectileObj.pos.y);
+                ProjectileRenderable.setPos(ProjectileObj.pos.x, ProjectileObj.pos.y);
                 this.WebGPUManager.addToScene(ProjectileRenderable);
+                this.entities.push(ProjectileObj);
 
                 this.wPressed = true;
             } else if (PlayerObj.isWPressed == false && this.wPressed) {
                 this.wPressed = false;
             }
+
+            this.entities.forEach((entity, index) => {
+                entity.updateProjectile();
+                ProjectileRenderable.setPos(entity.pos.x, entity.pos.y);
+
+                if (entity.hasOwnProperty("lifeTime")) {
+                    if (entity.lifeTime > entity.maxLifeTime) {
+                        this.entities.splice(index, 1);
+                    }
+                }
+            });
 
             if (Player.collisionWith !== null) {
                 Player.collisionWith.setColor(255, 255, 255, 255);
