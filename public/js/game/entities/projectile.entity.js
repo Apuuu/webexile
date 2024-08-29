@@ -1,6 +1,9 @@
 export default class Projectile {
 
-    constructor() {
+    constructor(ObjectHandler, WebGPUManager) {
+
+        this.ObjectHandler = ObjectHandler;
+        this.WebGPUManager = WebGPUManager;
 
         this.pos = { x: 0, y: 0 };
         this.scale = { x: 10, y: 10 };
@@ -12,6 +15,11 @@ export default class Projectile {
         this.maxLifeTime = 100;
 
         this.speed = 10;
+
+        this.renderable = this.ObjectHandler.createObject("rectangle", 10, 10);
+        this.WebGPUManager.addToScene(this.renderable);
+        this.renderable.setColor(255, 255, 0, 0);
+
     }
 
     shootProjectileAtTo(x, y, xdir, ydir) {
@@ -30,6 +38,12 @@ export default class Projectile {
         this.pos.y += this.ydir * this.speed;
 
         this.lifeTime++;
+
+        this.renderable.setPos(this.pos.x, this.pos.y)
+
+        if (this.lifeTime >= this.maxLifeTime) {
+            this.WebGPUManager.removeFromScene(this.renderable);
+        }
 
     }
 

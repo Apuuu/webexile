@@ -29,6 +29,14 @@ export default class WebGPUManager {
         this.scene.push(object);
     }
 
+    removeFromScene(object) {
+        const index = this.scene.indexOf(object);
+        if (index > -1) {
+            this.scene.splice(index, 1);
+            console.log('Object removed from scene:', object);
+        }
+    }
+
     init() {
         this.getAdapter().then(adapter => {
             this.jqueryCanvas.attr("width", config.screenWidth);

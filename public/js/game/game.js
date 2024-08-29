@@ -34,12 +34,8 @@ export default class Game {
         CollisionBox.setColor(0, 255, 0, 255);
         CollisionBox.setPos(300, 300);
 
-        const ProjectileRenderable = this.ObjectsHandler.createObject("rectangle", 5, 5);
-        ProjectileRenderable.setColor(0, 0, 255, 255);
-
         this.WebGPUManager.addToScene(CollisionBox);
         this.WebGPUManager.addToScene(Player);
-
 
         const PlayerObj = new PlayerController(Player);
 
@@ -49,27 +45,27 @@ export default class Game {
 
             if (PlayerObj.isWPressed && this.wPressed == false) {
 
-                let ProjectileObj = new Projectile();
+                let ProjectileObj = new Projectile(this.ObjectsHandler, this.WebGPUManager);
                 ProjectileObj.shootProjectileAtTo(Player.pos.x, Player.pos.y, PlayerObj.moveX, PlayerObj.moveY);
-
-                ProjectileRenderable.setPos(ProjectileObj.pos.x, ProjectileObj.pos.y);
-                this.WebGPUManager.addToScene(ProjectileRenderable);
                 this.entities.push(ProjectileObj);
-
                 this.wPressed = true;
+
             } else if (PlayerObj.isWPressed == false && this.wPressed) {
+
                 this.wPressed = false;
+
             }
 
             this.entities.forEach((entity, index) => {
+
                 entity.updateProjectile();
-                ProjectileRenderable.setPos(entity.pos.x, entity.pos.y);
 
                 if (entity.hasOwnProperty("lifeTime")) {
                     if (entity.lifeTime > entity.maxLifeTime) {
                         this.entities.splice(index, 1);
                     }
                 }
+
             });
 
             if (Player.collisionWith !== null) {
