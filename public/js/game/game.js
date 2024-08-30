@@ -20,12 +20,22 @@ export default class Game {
 
         const Rect = this.Engine.createObject("rectangle");
 
+        const dummy = this.Engine.spawnEnemy({ "x": 100, "y": 300 });
+        dummy.renderable.setScale(50, 50);
+
+        let sin = [];
+
+        for (let i = 0; i <= 100; i++) {
+            sin.push(this.Engine.createObject("rectangle"));
+        }
+
         Rect.renderable.setColor(0, 255, 0, 0);
         Rect.renderable.setPos(100, 0);
 
         setInterval(() => {
             this.tick++;
 
+            this.Engine.CollisionHandler.listenToCollisions();
             this.Engine.updatePlayer(Player);
             this.Engine.updateEntities();
 
@@ -37,6 +47,10 @@ export default class Game {
             }
 
             Rect.renderable.setScale(20, Math.abs(Math.sin(this.tick / 100)) * 20);
+
+            sin.forEach((cub, index) => {
+                cub.renderable.setPos(index * 10, Math.sin(this.tick / 50 + index / 10) * 100);
+            });
 
         }, 1000 / this.tickRate);
 

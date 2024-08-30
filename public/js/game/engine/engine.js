@@ -3,6 +3,7 @@ import ObjectsHandler from "./webGPU/objects/objectsHandler.js";
 import PlayerController from "./controllers/playerController.controller.js";
 import CollisionHandler from "./components/collisionHandler.js";
 import Projectile from "./entities/projectile.entity.js";
+import Enemy from "./entities/enemy.entity.js"
 import { config } from "./webGPU/config.js";
 
 export default class Engine {
@@ -17,6 +18,7 @@ export default class Engine {
 
     createPlayer(username) {
         const Player = this.ObjectsHandler.createObject("rectangle", 20, 50);
+        this.CollisionHandler.addCollisionListener(Player);
         Player.setColor(255, 0, 0, 255);
         this.WebGPUManager.addToScene(Player);
         const PlayerObj = new PlayerController(Player, username);
@@ -46,10 +48,16 @@ export default class Engine {
         const obj = Actor.physobj;
         const renderable = Actor.renderable;
 
-        const ProjectileObj = new Projectile(this.ObjectsHandler, this.WebGPUManager);
+        const ProjectileObj = new Projectile(this.ObjectsHandler, this.WebGPUManager, this.CollisionHandler);
         ProjectileObj.shoot(renderable.pos.x, renderable.pos.y, obj.moveX, obj.moveY);
-        console.log(renderable.pos.x, renderable.pos.y, obj.moveX, obj.moveY);
         this.entities.push(ProjectileObj);
+    }
+
+    spawnEnemy(pos) {
+        const EnemyObj = new Enemy(this.ObjectsHandler, this.WebGPUManager, this.CollisionHandler);
+        EnemyObj.setPos(pos);
+        this.entities.push(EnemyObj)
+        return { "renderable": EnemyObj.renderable, "physobj": EnemyObj };
     }
 
     updateEntities() {
@@ -63,9 +71,18 @@ export default class Engine {
                 }
             }
 
+            if (entity.hasOwnProperty("hitPoints")) {
+                if (entity.hitPoints <= 0) {
+                    this.entities.splice(index, 1);
+                }
+            }
+
         });
     }
 
+    checkCollision() {
+        console.log();
+    }
 
 
 }

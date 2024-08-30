@@ -5,7 +5,11 @@ export default class collisionHandler {
 
     }
 
-    addCollisionListenerTo(obj) {
+    removeCollisionListener(obj) {
+
+    }
+
+    addCollisionListener(obj) {
         this.collisionObjs.push(obj);
     }
 
