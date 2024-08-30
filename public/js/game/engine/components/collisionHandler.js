@@ -1,12 +1,13 @@
-export default class collisionHandler {
+export default class CollisionHandler {
     constructor() {
-
         this.collisionObjs = [];
-
     }
 
     removeCollisionListener(obj) {
-
+        const index = this.collisionObjs.indexOf(obj);
+        if (index > -1) {
+            this.collisionObjs.splice(index, 1);
+        }
     }
 
     addCollisionListener(obj) {
@@ -32,20 +33,24 @@ export default class collisionHandler {
     }
 
     isColliding(objA, objB) {
-        const scaledWidthA = objA.scale.x;
-        const scaledHeightA = objA.scale.y;
-        const scaledWidthB = objB.scale.x;
-        const scaledHeightB = objB.scale.y;
+        const leftA = objA.pos.x - objA.scale.x;
+        const rightA = objA.pos.x + objA.scale.x;
+        const topA = objA.pos.y - objA.scale.y;
+        const bottomA = objA.pos.y + objA.scale.y;
 
-        return objA.pos.x < objB.pos.x + scaledWidthB &&
-            objA.pos.x + scaledWidthA > objB.pos.x &&
-            objA.pos.y < objB.pos.y + scaledHeightB &&
-            objA.pos.y + scaledHeightA > objB.pos.y;
+        const leftB = objB.pos.x - objB.scale.x;
+        const rightB = objB.pos.x + objB.scale.x;
+        const topB = objB.pos.y - objB.scale.y;
+        const bottomB = objB.pos.y + objB.scale.y;
+
+        return leftA < rightB &&
+            rightA > leftB &&
+            topA < bottomB &&
+            bottomA > topB;
     }
 
     handleCollision(objA, objB) {
         objA.collisionWith = objB;
         objB.collisionWith = objA;
     }
-
 }

@@ -80,9 +80,4 @@ export default class Engine {
         });
     }
 
-    checkCollision() {
-        console.log();
-    }
-
-
 }

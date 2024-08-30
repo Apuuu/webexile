@@ -23,10 +23,7 @@ export default class Enemy extends Entity {
     }
 
     update() {
-
-        this.pos.x = this.pos.x + 1
-
-        this.renderable.setPos(Math.sin(this.pos.x / 100) * 100, this.pos.y);
+        this.renderable.setPos(this.pos.x, this.pos.y);
         const normalColor = this.hitPoints / this.maxhitPoints;
 
         this.renderable.setColor(255, normalColor, normalColor, 255);
