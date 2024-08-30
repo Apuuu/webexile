@@ -21,7 +21,7 @@ export default class Game {
         const Rect = this.Engine.createObject("rectangle");
 
         const dummy = this.Engine.spawnEnemy({ "x": 100, "y": 300 });
-        dummy.renderable.setScale(50, 50);
+        dummy.renderable.setScale(20, 20);
 
         let sin = [];
 

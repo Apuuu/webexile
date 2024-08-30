@@ -11,18 +11,23 @@ export default class Projectile extends Entity {
         this.lifeTime = 0;
         this.maxLifeTime = 500;
 
-        this.speed = 1;
+        this.speed = 3;
 
         this.renderable.type = "entity_projectile";
     }
 
     shoot(x, y, xdir, ydir) {
-
         this.setPos({ "x": x, "y": y });
 
-        this.xdir = xdir;
-        this.ydir = ydir;
+        const magnitude = Math.sqrt(xdir * xdir + ydir * ydir);
 
+        if (magnitude !== 0) {
+            this.xdir = xdir / magnitude;
+            this.ydir = ydir / magnitude;
+        } else {
+            this.xdir = 0;
+            this.ydir = 0;
+        }
     }
 
     update() {
