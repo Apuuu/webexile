@@ -26,12 +26,10 @@ export default class Enemy extends Entity {
     update() {
         this.renderable.setPos(this.pos.x, this.pos.y);
 
-        console.log(this.renderable.collisionWith);
-
         if (Array.isArray(this.renderable.collisionWith)) {
             for (const collidingObj of this.renderable.collisionWith) {
                 if (collidingObj.type === "entity_projectile") {
-                    this.takeDmg(1);
+                    this.takeDmg(10);
                     const normalColor = this.hitPoints / this.maxhitPoints;
                     this.renderable.setColor(255, normalColor, normalColor, 255);
                 }

@@ -19,15 +19,13 @@ export default class Game {
         const Player = this.Engine.createPlayer("Apu");
         const PlayerObj = Player.physobj;
 
-        //for (let i = 0; i <= 20; i++) {
-        const dummy = this.Engine.spawnEnemy({ "x": Math.random() * 200, "y": Math.random() * 200 });
-        dummy.renderable.setScale(20, 20);
-        //}
+        for (let i = 0; i <= 20; i++) {
+            const dummy = this.Engine.spawnEnemy({ "x": Math.random() * 1500, "y": Math.random() * 1500 });
+            dummy.renderable.setScale(20, 20);
+        }
 
         setInterval(() => {
             this.tick++;
-            //console.log(this.Engine.CollisionHandler.collisionObjs);
-            //console.log(this.Engine.entities);
 
             this.Engine.CollisionHandler.listenToCollisions();
             this.Engine.updatePlayer(Player);
