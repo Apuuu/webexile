@@ -20,9 +20,17 @@ export default class Game {
         const PlayerObj = Player.physobj;
 
         for (let i = 0; i <= 20; i++) {
-            const dummy = this.Engine.spawnEnemy({ "x": Math.random() * 1500, "y": Math.random() * 1500 });
+            const dummy = this.Engine.spawnEnemy({ x: Math.random() * 1500, y: Math.random() * 1500 });
             dummy.renderable.setScale(20, 20);
         }
+
+        const system = this.Engine.createParticlesystem(0, 0, 0, 0, 550, 100);
+
+        const A = 300;
+        const B = 300;
+        const a = 2;
+        const b = 1;
+        const delta = Math.PI / 4;
 
         setInterval(() => {
             this.tick++;
@@ -37,6 +45,10 @@ export default class Game {
             } else if (PlayerObj.isWPressed == false && this.wPressed) {
                 this.wPressed = false;
             }
+
+            system.setPos(A * Math.sin(a * this.tick / 30 + delta), B * Math.sin(b * this.tick / 30));
+
+            system.addRandomAcceleration(1);
 
         }, 1000 / this.tickRate);
 

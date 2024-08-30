@@ -12,7 +12,7 @@ export default class Projectile extends Entity {
         this.maxLifeTime = 500;
         this.hit = false;
 
-        this.speed = 3;
+        this.speed = 5;
 
         this.renderable.type = "entity_projectile";
     }

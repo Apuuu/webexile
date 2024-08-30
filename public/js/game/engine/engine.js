@@ -4,6 +4,7 @@ import PlayerController from "./controllers/playerController.controller.js";
 import CollisionHandler from "./components/collisionHandler.js";
 import Projectile from "./entities/projectile.entity.js";
 import Enemy from "./entities/enemy.entity.js"
+import ParticleSystem from "./webGPU/extensions/particlesystem.extension.js";
 import { config } from "./webGPU/config.js";
 
 export default class Engine {
@@ -58,6 +59,13 @@ export default class Engine {
         EnemyObj.setPos(pos);
         this.entities.push(EnemyObj)
         return { "renderable": EnemyObj.renderable, "physobj": EnemyObj };
+    }
+
+    createParticlesystem(x, y, maxx, maxy, count, lifespan) {
+        const system = new ParticleSystem(x, y, count);
+        system.createParticles(maxx, maxy, lifespan);
+        this.WebGPUManager.addToScene(system);
+        return system;
     }
 
     updateEntities() {

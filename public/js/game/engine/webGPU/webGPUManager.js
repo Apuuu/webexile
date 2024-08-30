@@ -33,7 +33,6 @@ export default class WebGPUManager {
         const index = this.scene.indexOf(object);
         if (index > -1) {
             this.scene.splice(index, 1);
-            //console.log('Object removed from scene:', object);
         }
     }
 
@@ -141,6 +140,7 @@ export default class WebGPUManager {
         let offset = 0;
 
         visibleObjects.forEach(object => {
+
             object.offset = this.cameraPos;
             object.updateVerts();
 
