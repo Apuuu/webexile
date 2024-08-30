@@ -16,6 +16,7 @@ export default class CollisionHandler {
 
     listenToCollisions() {
         const collisionObjsLength = this.collisionObjs.length;
+        const collisions = new Map();
 
         for (let i = 0; i < collisionObjsLength; i++) {
             for (let j = i + 1; j < collisionObjsLength; j++) {
@@ -23,11 +24,23 @@ export default class CollisionHandler {
                 const objB = this.collisionObjs[j];
 
                 if (this.isColliding(objA, objB)) {
-                    this.handleCollision(objA, objB);
-                } else {
-                    objA.collisionWith = null;
-                    objB.collisionWith = null;
+                    if (!collisions.has(objA)) {
+                        collisions.set(objA, new Set());
+                    }
+                    if (!collisions.has(objB)) {
+                        collisions.set(objB, new Set());
+                    }
+                    collisions.get(objA).add(objB);
+                    collisions.get(objB).add(objA);
                 }
+            }
+        }
+
+        for (let obj of this.collisionObjs) {
+            if (collisions.has(obj)) {
+                obj.collisionWith = Array.from(collisions.get(obj));
+            } else {
+                obj.collisionWith = null;
             }
         }
     }
@@ -47,10 +60,5 @@ export default class CollisionHandler {
             rightA > leftB &&
             topA < bottomB &&
             bottomA > topB;
-    }
-
-    handleCollision(objA, objB) {
-        objA.collisionWith = objB;
-        objB.collisionWith = objA;
     }
 }

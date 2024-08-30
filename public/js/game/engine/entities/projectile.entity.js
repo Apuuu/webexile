@@ -10,6 +10,7 @@ export default class Projectile extends Entity {
 
         this.lifeTime = 0;
         this.maxLifeTime = 500;
+        this.hit = false;
 
         this.speed = 3;
 
@@ -36,12 +37,22 @@ export default class Projectile extends Entity {
 
         this.lifeTime++;
 
-        this.renderable.setPos(this.pos.x, this.pos.y)
+        this.renderable.setPos(this.pos.x, this.pos.y);
+
+        if (Array.isArray(this.renderable.collisionWith)) {
+            for (const collidingObj of this.renderable.collisionWith) {
+                if (collidingObj.type === "entity_enemy") {
+                    this.WebGPUManager.removeFromScene(this.renderable);
+                    this.hit = true;
+                    break;
+                }
+            }
+            this.renderable.collisionWith = null;
+        }
 
         if (this.lifeTime >= this.maxLifeTime) {
             this.WebGPUManager.removeFromScene(this.renderable);
         }
-
     }
 
 }

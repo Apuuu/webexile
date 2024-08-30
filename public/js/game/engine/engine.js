@@ -68,12 +68,21 @@ export default class Engine {
             if (entity.hasOwnProperty("lifeTime")) {
                 if (entity.lifeTime > entity.maxLifeTime) {
                     this.entities.splice(index, 1);
+                    this.CollisionHandler.removeCollisionListener(entity.renderable);
                 }
             }
 
             if (entity.hasOwnProperty("hitPoints")) {
                 if (entity.hitPoints <= 0) {
                     this.entities.splice(index, 1);
+                    this.CollisionHandler.removeCollisionListener(entity.renderable);
+                }
+            }
+
+            if (entity.hasOwnProperty("hit")) {
+                if (entity.hit) {
+                    this.entities.splice(index, 1);
+                    this.CollisionHandler.removeCollisionListener(entity.renderable);
                 }
             }
 
