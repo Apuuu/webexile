@@ -74,16 +74,11 @@ export default class ParticleSystem {
         const halfHeight = this.screenHeight / 2;
 
         this.particles.forEach((particle) => {
-            let posX, posY;
+
             particle.lifeTime++;
 
-            if (this.isAlive(particle)) {
-                posX = (particle.x) + this.offset.x;
-                posY = (particle.y) + this.offset.y;
-            } else {
-                posX = (particle.x + this.pos.x) + this.offset.x;
-                posY = (particle.y + this.pos.y) + this.offset.y;
-            }
+            const posX = (particle.x) + this.offset.x;
+            const posY = (particle.y) + this.offset.y;
 
             const scaleX = this.scale.x;
             const scaleY = this.scale.y;

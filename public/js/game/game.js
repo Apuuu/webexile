@@ -24,7 +24,7 @@ export default class Game {
             dummy.renderable.setScale(20, 20);
         }
 
-        const system = this.Engine.createParticlesystem(0, 0, 0, 0, 550, 100);
+        const system = this.Engine.createParticlesystem(0, 0, 0, 0, 200, 100);
 
         const A = 300;
         const B = 300;
