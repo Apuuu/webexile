@@ -33,7 +33,7 @@ export default class WebGPUManager {
         const index = this.scene.indexOf(object);
         if (index > -1) {
             this.scene.splice(index, 1);
-            console.log('Object removed from scene:', object);
+            //console.log('Object removed from scene:', object);
         }
     }
 

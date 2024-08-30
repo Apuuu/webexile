@@ -1,10 +1,11 @@
-import { config } from "../../webGPU/config.js";
-import Utils from "../../utils.js";
+import { config } from "../webGPU/config.js";
+import Utils from "../../../utils.js";
 
 export default class PlayerController {
-    constructor(playerObject) {
+    constructor(playerObject, username) {
         this.Utils = new Utils();
         this.player = playerObject;
+        this.username = username;
         this.canvas = document.getElementById("webGPUcanvas");
 
         this.width = config.screenWidth;
