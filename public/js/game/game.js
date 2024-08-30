@@ -42,7 +42,7 @@ export default class Game {
             this.Engine.updateEntities();
 
             playerEffects.setPos(Player.renderable.pos.x, Player.renderable.pos.y);
-            playerEffects.addRandomAcceleration(1);
+            playerEffects.addRandomAcceleration(0.1);
 
             if (PlayerObj.isWPressed && this.wPressed == false) {
                 this.Engine.shootProjectile(Player);

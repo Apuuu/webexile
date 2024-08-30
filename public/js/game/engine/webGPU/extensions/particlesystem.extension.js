@@ -36,7 +36,6 @@ export default class ParticleSystem {
     setPos(x, y) {
         this.pos.x = x;
         this.pos.y = y;
-        this.updateVerts();
     }
 
     addRandomAcceleration(strength) {

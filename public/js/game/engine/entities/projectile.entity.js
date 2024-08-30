@@ -1,4 +1,5 @@
 import Entity from "./entity.js";
+import ParticleSystem from "../webGPU/extensions/particlesystem.extension.js";
 
 export default class Projectile extends Entity {
 
@@ -15,6 +16,11 @@ export default class Projectile extends Entity {
         this.speed = 5;
 
         this.renderable.type = "entity_projectile";
+
+        this.particleSystem = new ParticleSystem(0, 0, 100);
+        this.particleSystem.createParticles(0, 0, 100);
+        this.particleSystem.setColor(1, 1, 0, 1);
+        this.WebGPUManager.addToScene(this.particleSystem);
     }
 
     shoot(x, y, xdir, ydir) {
@@ -38,11 +44,14 @@ export default class Projectile extends Entity {
         this.lifeTime++;
 
         this.renderable.setPos(this.pos.x, this.pos.y);
+        this.particleSystem.setPos(this.pos.x, this.pos.y);
+        this.particleSystem.addRandomAcceleration(1);
 
         if (Array.isArray(this.renderable.collisionWith)) {
             for (const collidingObj of this.renderable.collisionWith) {
                 if (collidingObj.type === "entity_enemy") {
                     this.WebGPUManager.removeFromScene(this.renderable);
+                    this.WebGPUManager.removeFromScene(this.particleSystem);
                     this.hit = true;
                     break;
                 }
@@ -52,6 +61,7 @@ export default class Projectile extends Entity {
 
         if (this.lifeTime >= this.maxLifeTime) {
             this.WebGPUManager.removeFromScene(this.renderable);
+            this.WebGPUManager.removeFromScene(this.particleSystem);
         }
     }
 
