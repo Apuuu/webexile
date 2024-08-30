@@ -25,6 +25,8 @@ export default class Game {
         }
 
         const system = this.Engine.createParticlesystem(0, 0, 0, 0, 200, 100);
+        const playerEffects = this.Engine.createParticlesystem(0, 0, 0, 0, 500, 500);
+        playerEffects.setColor(1, 0, 0, 1);
 
         const A = 300;
         const B = 300;
@@ -38,6 +40,9 @@ export default class Game {
             this.Engine.CollisionHandler.listenToCollisions();
             this.Engine.updatePlayer(Player);
             this.Engine.updateEntities();
+
+            playerEffects.setPos(Player.renderable.pos.x, Player.renderable.pos.y);
+            playerEffects.addRandomAcceleration(1);
 
             if (PlayerObj.isWPressed && this.wPressed == false) {
                 this.Engine.shootProjectile(Player);

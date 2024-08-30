@@ -64,6 +64,13 @@ export default class ParticleSystem {
         }
     }
 
+    setColor(r, g, b, a) {
+        this.color.r = r;
+        this.color.g = g;
+        this.color.b = b;
+        this.color.a = a;
+    }
+
     isAlive(particle) {
         return particle.lifeTime <= particle.maxLifeTime;
     }
