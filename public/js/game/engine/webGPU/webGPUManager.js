@@ -23,9 +23,14 @@ export default class WebGPUManager {
 
         this.lastFrameTime = 0;
         this.frameDuration = 1000 / this.frameRateCap;
+
+        this.notFoundTexture = "";
     }
 
-    addToScene(object) {
+    async addToScene(object) {
+        const { texture, sampler } = await this.loadTexture(object.texturePath);
+        object.texture = texture;
+        object.sampler = sampler;
         this.scene.push(object);
     }
 
@@ -151,6 +156,8 @@ export default class WebGPUManager {
         const vertexBuffer = this.createVertexBuffer(bufferParams);
         let offset = 0;
 
+        console.log(visibleObjects);
+
         visibleObjects.forEach(object => {
 
             object.offset = this.cameraPos;
@@ -164,6 +171,13 @@ export default class WebGPUManager {
 
         let vertexOffset = 0;
         visibleObjects.forEach(object => {
+            passEncoder.setBindGroup(0, this.device.createBindGroup({
+                layout: this.renderPipeline.getBindGroupLayout(0),
+                entries: [
+                    { binding: 0, resource: object.texture.createView() },
+                    { binding: 1, resource: object.sampler },
+                ],
+            }));
             passEncoder.draw(object.verts.length / 8, 1, vertexOffset / 8, 0); // 8 components per vertex (x, y, r, g, b, a, u, v)
             vertexOffset += object.verts.length;
         });
@@ -219,6 +233,30 @@ export default class WebGPUManager {
 
     createVertexBuffer(params) {
         return this.device.createBuffer(params);
+    }
+
+    async loadTexture(texturePath) {
+        const response = await fetch(texturePath);
+        const imageBitmap = await response.blob().then(blob => createImageBitmap(blob));
+
+        const texture = this.device.createTexture({
+            size: [imageBitmap.width, imageBitmap.height, 1],
+            format: 'rgba8unorm', // Ensure the format supports alpha channel
+            usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
+        });
+
+        this.device.queue.copyExternalImageToTexture(
+            { source: imageBitmap },
+            { texture: texture },
+            [imageBitmap.width, imageBitmap.height, 1]
+        );
+
+        const sampler = this.device.createSampler({
+            magFilter: 'linear',
+            minFilter: 'linear',
+        });
+
+        return { texture, sampler };
     }
 
     async getAdapter() {

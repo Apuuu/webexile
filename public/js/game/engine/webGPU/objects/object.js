@@ -8,6 +8,7 @@ export default class Object {
 
         this.name = "";
         this.type = "";
+        this.texturePath = "/js/game/engine/textures/objects/rectangle/rect.jpg";
         this.collisionWith = null;
 
         this.scale = {
