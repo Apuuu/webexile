@@ -156,8 +156,6 @@ export default class WebGPUManager {
         const vertexBuffer = this.createVertexBuffer(bufferParams);
         let offset = 0;
 
-        console.log(visibleObjects);
-
         visibleObjects.forEach(object => {
 
             object.offset = this.cameraPos;
