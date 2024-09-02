@@ -20,7 +20,7 @@ export default class Engine {
     createPlayer(username) {
         const Player = this.ObjectsHandler.createObject("rectangle", 20, 50);
         this.CollisionHandler.addCollisionListener(Player);
-        Player.setColor(255, 0, 0, 255);
+        Player.setColor(1, 1, 1, 1);
         this.WebGPUManager.addToScene(Player);
         const PlayerObj = new PlayerController(Player, username);
         return { "renderable": Player, "physobj": PlayerObj };

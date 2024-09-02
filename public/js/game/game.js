@@ -21,7 +21,7 @@ export default class Game {
 
         for (let i = 0; i <= 20; i++) {
             const dummy = this.Engine.spawnEnemy({ x: Math.random() * 1500, y: Math.random() * 1500 });
-            dummy.renderable.setScale(20, 20);
+            dummy.renderable.setScale(50, 50);
         }
 
         const system = this.Engine.createParticlesystem(0, 0, 0, 0, 200, 100);
@@ -52,8 +52,9 @@ export default class Game {
             }
 
             system.setPos(A * Math.sin(a * this.tick / 30 + delta), B * Math.sin(b * this.tick / 30));
-
             system.addRandomAcceleration(1);
+            system.fadeOut();
+            system.growBigger(1, 10);
 
         }, 1000 / this.tickRate);
 

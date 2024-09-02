@@ -7,18 +7,19 @@ export default class ParticleSystem {
         this.screenHeight = config.screenHeight;
 
         this.pos = { x: x, y: y };
-        this.color = { r: 1, g: 1, b: 1, a: 1 };
+        this.color = { r: 1, g: 1, b: 1, a: 0 };
         this.scale = { x: 3, y: 3 };
         this.offset = { x: 0, y: 0 };
 
         this.particles = [];
         this.maxParticleCount = count;
 
+        this.texturePath = "/js/game/engine/textures/particles/defaultParticle.png";
         this.verts = [];
     }
 
     createParticles(maxx, maxy, maxPossibleLifeTime) {
-        for (let i = 0; i <= this.maxParticleCount; i++) {
+        for (let i = 0; i < this.maxParticleCount; i++) {
             const particle = {
                 x: Math.random() * maxx,
                 y: Math.random() * maxy,
@@ -26,6 +27,8 @@ export default class ParticleSystem {
                 yVel: 0,
                 maxLifeTime: Math.random() * maxPossibleLifeTime,
                 lifeTime: 0,
+                color: { ...this.color },
+                scale: { ...this.scale },
             };
 
             this.particles.push(particle);
@@ -53,13 +56,36 @@ export default class ParticleSystem {
         });
     }
 
+    fadeOut() {
+        this.particles.forEach(particle => {
+            particle.color.a = Math.abs(particle.lifeTime / particle.maxLifeTime - 1);
+        });
+    }
+
+    fadeIn() {
+        this.particles.forEach(particle => {
+            particle.color.a = particle.lifeTime / particle.maxLifeTime;
+        });
+    }
+
+    growBigger(start, end) {
+        this.particles.forEach(particle => {
+            const normalizedLife = particle.lifeTime / particle.maxLifeTime;
+            const size = start + normalizedLife * end;
+            particle.scale.x = size;
+            particle.scale.y = size;
+        });
+    }
+
     restoreDeadParticle(particle) {
-        if (particle.lifeTime > particle.maxLifeTime) {
+        if (particle.lifeTime >= particle.maxLifeTime) {
             particle.x = this.pos.x;
             particle.y = this.pos.y;
             particle.xVel = 0;
             particle.yVel = 0;
             particle.lifeTime = 0;
+            particle.color.a = 1;
+            particle.scale = { ...this.scale };
         }
     }
 
@@ -86,8 +112,8 @@ export default class ParticleSystem {
             const posX = (particle.x) + this.offset.x;
             const posY = (particle.y) + this.offset.y;
 
-            const scaleX = this.scale.x;
-            const scaleY = this.scale.y;
+            const scaleX = particle.scale.x;
+            const scaleY = particle.scale.y;
 
             const verts = [
                 [-scaleX + posX, -scaleY + posY],
@@ -99,7 +125,7 @@ export default class ParticleSystem {
                 [-scaleX + posX, scaleY + posY]
             ];
 
-            const color = [this.color.r, this.color.g, this.color.b, this.color.a];
+            const color = [particle.color.r, particle.color.g, particle.color.b, particle.color.a];
             const uvCoords = [
                 [0, 0], [1, 0], [1, 1],
                 [0, 0], [1, 1], [0, 1]
