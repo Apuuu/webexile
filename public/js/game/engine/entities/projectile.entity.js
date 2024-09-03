@@ -20,7 +20,10 @@ export default class Projectile extends Entity {
         this.particleSystem = new ParticleSystem(0, 0, 100);
         this.particleSystem.createParticles(0, 0, 100);
         this.particleSystem.setColor(1, 1, 0, 1);
+        this.renderable.texturePath = "/js/game/engine/textures/particles/defaultParticle.png";
+
         this.WebGPUManager.addToScene(this.particleSystem);
+        this.WebGPUManager.addToScene(this.renderable);
     }
 
     shoot(x, y, xdir, ydir) {
@@ -46,6 +49,7 @@ export default class Projectile extends Entity {
         this.renderable.setPos(this.pos.x, this.pos.y);
         this.particleSystem.setPos(this.pos.x, this.pos.y);
         this.particleSystem.addRandomAcceleration(1);
+        this.particleSystem.fadeOut();
 
         if (Array.isArray(this.renderable.collisionWith)) {
             for (const collidingObj of this.renderable.collisionWith) {
