@@ -44,11 +44,9 @@ export default class Game {
             playerEffects.setPos(Player.renderable.pos.x, Player.renderable.pos.y);
             playerEffects.addRandomAcceleration(0.1);
 
-            if (PlayerObj.isWPressed && this.wPressed == false) {
+            if (PlayerObj.isWPressed) {
                 this.Engine.shootProjectile(Player);
-                this.wPressed = true;
-            } else if (PlayerObj.isWPressed == false && this.wPressed) {
-                this.wPressed = false;
+                //this.wPressed = true;
             }
 
             system.setPos(A * Math.sin(a * this.tick / 30 + delta), B * Math.sin(b * this.tick / 30));

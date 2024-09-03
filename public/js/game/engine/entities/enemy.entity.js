@@ -12,6 +12,8 @@ export default class Enemy extends Entity {
 
         this.renderable.type = "entity_enemy";
         this.renderable.texturePath = "/js/game/engine/textures/entities/enemies/gor.jpg";
+
+        this.WebGPUManager.addToScene(this.renderable);
     }
 
     takeDmg(dmg) {
